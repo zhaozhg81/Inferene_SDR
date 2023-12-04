@@ -7,6 +7,8 @@ Created on Thu Nov 23 05:47:22 2023
 """
 
 import numpy as np
+from sklearn.model_selection import train_test_split
+from Inference_SDR.SIR import SIR
 
 
 def add_one(number):
@@ -15,10 +17,10 @@ def add_one(number):
 
 def generate_demo_data(n, p, H):
     
-    p = 10
-    n = 200
+    ## p = 10
+    ## n = 200
+    ## H = 20
     
-    H = 20
     m = n // H
     
     beta = np.zeros((p, 1))
@@ -39,3 +41,19 @@ def generate_demo_data(n, p, H):
     
     return(X, Y, beta)
     
+def demo():
+    n=500
+    p=10
+    H=20
+    m=25
+    
+    
+    X, Y, beta = generate_demo_data(n,p,H)   
+
+    # Split the data into training and testing sets
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+    sir_object = SIR(X_train, Y_train, X_train.shape[0], p, H, 1)
+    sir_object.get_direction()
+    
+    X_pred = sir_object.predict_SDR( X_test)
+
